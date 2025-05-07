@@ -22,7 +22,24 @@ gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+m = ShareableMutex.new.freeze # must be frozen
+
+r1 = Ractor.new(m) {|m|
+  m.lock
+  100.times do
+    p "locked 1"
+  end
+  m.unlock
+}
+r2 = Ractor.new(m) {|m|
+  m.lock # should wait
+  p "locked 2"
+}
+
+r1.take
+r2.take
+```
 
 ## Development
 
